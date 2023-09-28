@@ -1,0 +1,225 @@
+{
+  "name": "vscode-taskview",
+  "displayName": "Task View",
+  "description": "All tasks are showcased in a dedicated view, grouped to improve organization and clarity.",
+  "version": "0.0.1",
+  "publisher": "pHofer94",
+  "icon": "resources/favicon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pHofer94/vscode-taskview"
+  },
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.81.1"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "tasks",
+    "vs code tasks",
+    "npm",
+    "view",
+    "task view",
+    "explorer"
+  ],
+  "activationEvents": [],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "vscode-taskview.refreshView",
+        "title": "Refresh",
+        "icon": "$(refresh)",
+        "enablement": "vscode-taskview.view.isLoaded"
+      },
+      {
+        "command": "vscode-taskview.viewAsList",
+        "title": "View as List",
+        "icon": "$(list-tree)",
+        "enablement": "vscode-taskview.view.isLoaded"
+      },
+      {
+        "command": "vscode-taskview.viewAsTree",
+        "title": "View as Tree",
+        "icon": "$(list-flat)",
+        "enablement": "vscode-taskview.view.isLoaded"
+      },
+      {
+        "command": "vscode-taskview.runTask",
+        "title": "Run",
+        "icon": "$(run)"
+      },
+      {
+        "command": "vscode-taskview.addToFavorites",
+        "title": "Add to Favorites",
+        "icon": "$(star-empty)"
+      },
+      {
+        "command": "vscode-taskview.removeFromFavorites",
+        "title": "Remove from Favorites",
+        "icon": "$(star-full)"
+      }
+    ],
+    "configuration": {
+      "title": "Task View",
+      "properties": {
+        "vscode-taskview.view.showHiddenTasks": {
+          "description": "If set, hidden tasks will be displayed in the task view.",
+          "type": "boolean",
+          "default": false
+        },
+        "vscode-taskview.tasks.favorites": {
+          "description": "It specifies the favorite tasks displayed in a separate folder. The names stored in the favorites follow the naming convention: <source>\\<cwd>\\<taskName>.",
+          "type": "array",
+          "minLength": 0,
+          "default": []
+        },
+        "vscode-taskview.logging.logLevel": {
+          "description": "This specifies the log output level to the console.",
+          "type": "string",
+          "enum": [
+            "Debug",
+            "Error",
+            "Warning",
+            "Info"
+          ],
+          "enumDescriptions": [
+            "Log debug messages",
+            "Log error messages",
+            "Log warning messages",
+            "Log information messages"
+          ],
+          "default": "Info"
+        }
+      }
+    },
+    "viewsWelcome": [
+      {
+        "view": "taskView",
+        "contents": "No tasks found.\n[Refresh Tasks](command:vscode-taskview.refreshView)",
+        "when": "vscode-taskview.view.isLoaded"
+      },
+      {
+        "view": "taskViewExplorer",
+        "contents": "No tasks found.\n[Refresh Tasks](command:vscode-taskview.refreshView)",
+        "when": "vscode-taskview.view.isLoaded"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "task-explorer",
+          "title": "Task Explorer",
+          "icon": "$(symbol-method)"
+        }
+      ]
+    },
+    "views": {
+      "task-explorer": [
+        {
+          "id": "taskViewExplorer",
+          "name": "Tasks",
+          "icon": "$(symbol-method)",
+          "contextualTitle": "Task Explorer"
+        }
+      ],
+      "explorer": [
+        {
+          "id": "taskView",
+          "name": "Tasks"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "vscode-taskview.refreshView",
+          "when": "view == taskView || view == taskViewExplorer",
+          "group": "navigation@2"
+        },
+        {
+          "command": "vscode-taskview.viewAsList",
+          "when": "(view == taskView || view == taskViewExplorer) && !vscode-taskview.view.isFlatList",
+          "group": "navigation@1"
+        },
+        {
+          "command": "vscode-taskview.viewAsTree",
+          "when": "(view == taskView || view == taskViewExplorer) && vscode-taskview.view.isFlatList",
+          "group": "navigation@1"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "vscode-taskview.runTask",
+          "when": "(view == taskView || view == taskViewExplorer) && viewItem =~ /^treeItemTask/",
+          "group": "inline"
+        },
+        {
+          "command": "vscode-taskview.addToFavorites",
+          "when": "(view == taskView || view == taskViewExplorer) && viewItem =~ /^treeItemTask/ && !(viewItem =~ /Fav/)"
+        },
+        {
+          "command": "vscode-taskview.removeFromFavorites",
+          "when": "(view == taskView || view == taskViewExplorer) && viewItem =~ /^treeItemTask/ && viewItem =~ /Fav/"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "vscode-taskview.refreshView",
+          "when": "false"
+        },
+        {
+          "command": "vscode-taskview.viewAsList",
+          "when": "false"
+        },
+        {
+          "command": "vscode-taskview.viewAsTree",
+          "when": "false"
+        },
+        {
+          "command": "vscode-taskview.runTask",
+          "when": "false"
+        },
+        {
+          "command": "vscode-taskview.addToFavorites",
+          "when": "false"
+        },
+        {
+          "command": "vscode-taskview.removeFromFavorites",
+          "when": "false"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode-prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "prettier": "npx prettier --write ./src",
+    "vsce-package": "vsce package --out ./packages/"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.81.1",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
+    "@typescript-eslint/parser": "^6.4.1",
+    "@vscode/test-electron": "^2.3.4",
+    "eslint": "^8.47.0",
+    "glob": "^10.3.3",
+    "mocha": "^10.2.0",
+    "prettier": "^3.0.3",
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.1.6",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  }
+}

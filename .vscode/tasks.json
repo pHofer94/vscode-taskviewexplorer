@@ -1,0 +1,75 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+        {
+            "label": "nvm use 16.18.1",
+            "type": "shell",
+            "command": "Start-Process powershell -Verb runAs -ArgumentList 'nvm use 16.18.1'",
+            "args": [],
+			"hide": false
+        },
+		{
+			"label": "eslint",
+			"type": "npm",
+			"script": "lint",
+			"problemMatcher": [
+				"$eslint-stylish"
+			]
+		},
+		{
+			"label": "prettier",
+			"type": "npm",
+			"script": "prettier",
+			"problemMatcher": []
+		},
+		{
+			"label": "build",
+			"type": "npm",
+			"script": "watch",
+			"problemMatcher": [
+				"$ts-webpack-watch",
+				"$tslint-webpack-watch"
+			],
+			"isBackground": true,
+			"presentation": {
+				"reveal": "never",
+				"group": "watchers"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"type": "npm",
+			"script": "watch-tests",
+			"problemMatcher": "$tsc-watch",
+			"isBackground": true,
+			"presentation": {
+				"reveal": "never",
+				"group": "watchers"
+			},
+			"group": "build"
+		},
+		{
+			"label": "tasks-watch-tests",
+			"dependsOn": [
+				"npm: watch",
+				"npm: watch-tests"
+			],
+			"problemMatcher": []
+		},
+		{
+			"label": "Create VSIX package",
+			"type": "npm",
+			"script": "vsce-package",
+			"problemMatcher": []
+		},
+		{
+			"label": "Publish extension",
+			"type": "npm",
+			"script": "vsce-publish",
+			"problemMatcher": []
+		}
+	]
+}
