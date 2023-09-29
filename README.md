@@ -8,7 +8,7 @@ The Task View extension displays all tasks in a separate view and improves organ
     - [List of all available Tasks](#list-of-all-available-tasks)
     - [Run the listed tasks](#run-the-listed-tasks)
     - [Add to Favorites or Remove from Favorites](#add-to-favorites-or-remove-from-favorites)
-    - [Automatic Refresh of the View](#aautomatic-refresh-of-the-view)
+    - [Automatic Refresh of the View](#automatic-refresh-of-the-view)
     - [Task Explorer](#task-explorer)
 - [Known Issues](#known-issues)
 
