@@ -11,7 +11,7 @@
   },
   "license": "MIT",
   "engines": {
-    "vscode": "^1.81.1"
+    "vscode": "^1.61.0"
   },
   "categories": [
     "Other"
@@ -209,10 +209,11 @@
   "devDependencies": {
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
-    "@types/vscode": "^1.81.1",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
-    "@vscode/test-electron": "^2.3.4",
+    "@types/vscode": "^1.61.0",
+    "@vscode/test-electron": "^1.6.2",
+		"@vscode/vsce": "^2.19.0",
     "eslint": "^8.47.0",
     "glob": "^10.3.3",
     "mocha": "^10.2.0",

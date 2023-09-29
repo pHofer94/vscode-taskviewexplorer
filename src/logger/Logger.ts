@@ -1,14 +1,14 @@
 import * as vscode from 'vscode';
 import LogEntry from './LogEntry';
 import { LogLevel } from 'vscode';
-import { EXTENSION_NAME } from '../Constants';
+import { DISPLAY_NAME } from '../Constants';
 
 type LogCallback = (message: string) => void;
 
 class Logger {
     public static readonly instance: Logger = new Logger();
 
-    public channel: vscode.OutputChannel = vscode.window.createOutputChannel(EXTENSION_NAME);
+    public channel: vscode.OutputChannel = vscode.window.createOutputChannel(DISPLAY_NAME);
     private _infoFnc: LogCallback = this._logInfo;
     private _warningFnc: LogCallback = this._ignoreLogging;
     private _errorFnc: LogCallback = this._ignoreLogging;
