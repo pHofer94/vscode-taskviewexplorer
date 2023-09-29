@@ -98,12 +98,12 @@
     "viewsWelcome": [
       {
         "view": "taskView",
-        "contents": "No tasks found.\n[Refresh Tasks](command:vscode-taskview.refreshView)",
+        "contents": "No tasks found. Please refresh the view to search for tasks again.\n[Refresh](command:vscode-taskview.refreshView)",
         "when": "vscode-taskview.view.isLoaded"
       },
       {
         "view": "taskViewExplorer",
-        "contents": "No tasks found.\n[Refresh Tasks](command:vscode-taskview.refreshView)",
+        "contents": "No tasks found. Please refresh the view to search for tasks again.\n[Refresh](command:vscode-taskview.refreshView)",
         "when": "vscode-taskview.view.isLoaded"
       }
     ],
