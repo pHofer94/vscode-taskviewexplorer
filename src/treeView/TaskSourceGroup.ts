@@ -1,21 +1,16 @@
 import { TaskSourceMap, TaskOriginMap, TaskSourceEnum } from './TaskTypes';
 import Task from '../vscode/Task';
 
-export default class TaskGroupService {
+export default class TaskSourceGroup {
     public readonly sourceMap: TaskSourceMap = new Map();
 
     constructor() {}
 
-    public groupBySource(tasks: Task[]): TaskSourceMap {
-        this.sourceMap.clear();
-        for (const task of tasks) {
-            this.addToSourceMap(task.source, task);
-
-            if (task.isFavorite) {
-                this.addToSourceMap(TaskSourceEnum.favorites.toString(), task);
-            }
+    public addTask(task: Task) {
+        this.addToSourceMap(task.source, task);
+        if (task.isFavorite) {
+            this.addToSourceMap(TaskSourceEnum.favorites.toString(), task);
         }
-        return this.sourceMap;
     }
 
     private addToSourceMap(source: string, task: Task) {

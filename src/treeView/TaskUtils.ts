@@ -1,4 +1,4 @@
-import { TaskOriginMap, TaskSourceEnum } from './TaskTypes';
+import { TaskOriginMap } from './TaskTypes';
 import TreeItemTask from './treeItems/TreeItemTask';
 import TreeItem from './treeItems/TreeItem';
 import path = require('path');

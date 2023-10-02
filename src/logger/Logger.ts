@@ -1,18 +1,31 @@
 import * as vscode from 'vscode';
 import LogEntry from './LogEntry';
 import { LogLevel } from 'vscode';
-import { DISPLAY_NAME } from '../Constants';
 
 type LogCallback = (message: string) => void;
 
-class Logger {
-    public static readonly instance: Logger = new Logger();
-
-    public channel: vscode.OutputChannel = vscode.window.createOutputChannel(DISPLAY_NAME);
+export class Logger {
+    public channel: vscode.OutputChannel;
     private _infoFnc: LogCallback = this._logInfo;
     private _warningFnc: LogCallback = this._ignoreLogging;
     private _errorFnc: LogCallback = this._ignoreLogging;
     private _debugFnc: LogCallback = this._ignoreLogging;
+
+    public constructor(channelname: string) {
+        this.channel = vscode.window.createOutputChannel(channelname);
+    }
+
+    public setLogLevel(logLevel: vscode.LogLevel) {
+        if (logLevel === vscode.LogLevel.Debug) {
+            this.setDebugLogLevelFunctions();
+        } else if (logLevel === vscode.LogLevel.Error) {
+            this.setErrorLogLevelFunctions();
+        } else if (logLevel === vscode.LogLevel.Warning) {
+            this.setWarningLogLevelFunctions();
+        } else {
+            this.setInfoLogLevelFunctions();
+        }
+    }
 
     public get info(): LogCallback {
         return this._infoFnc;
@@ -28,18 +41,6 @@ class Logger {
 
     public get debug(): LogCallback {
         return this._debugFnc;
-    }
-
-    public setLogLevel(logLevel: vscode.LogLevel) {
-        if (logLevel === vscode.LogLevel.Debug) {
-            this.setDebugLogLevelFunctions();
-        } else if (logLevel === vscode.LogLevel.Error) {
-            this.setErrorLogLevelFunctions();
-        } else if (logLevel === vscode.LogLevel.Warning) {
-            this.setWarningLogLevelFunctions();
-        } else {
-            this.setInfoLogLevelFunctions();
-        }
     }
 
     private setInfoLogLevelFunctions() {
@@ -103,5 +104,3 @@ class Logger {
         return `${header} ${message}`;
     }
 }
-
-export const logger = Logger.instance;

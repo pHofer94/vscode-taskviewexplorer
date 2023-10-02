@@ -10,6 +10,8 @@ interface TaskConfig {
 
 export default class FetchTasksService {
     private allTasks: Task[] = [];
+    private _onNewTask = new vscode.EventEmitter<Task>();
+    public onNewTask = this._onNewTask.event;
 
     constructor(
         private _filterHiddenTasks: boolean,
@@ -43,6 +45,7 @@ export default class FetchTasksService {
                     let task = new Task(vsCodeTask, source, this.workspaceRoot);
                     task.isFavorite = this._favorites.includes(task.getFullQualifiedName());
                     this.allTasks.push(task);
+                    this._onNewTask.fire(task);
                 }
             }
         }

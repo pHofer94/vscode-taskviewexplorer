@@ -1,13 +1,10 @@
 import * as vscode from 'vscode';
-import { EXTENSION_NAME } from './Constants';
 
-class ExtensionContext {
-    public static readonly instance: ExtensionContext = new ExtensionContext();
-    public static readonly contextRootKey = EXTENSION_NAME;
+export default class ExtensionContext {
     public readonly isActiveKey = 'isActive';
     private _isActive = false;
 
-    private constructor() {
+    public constructor(private readonly rootKey: string) {
         this.isActive = false;
     }
 
@@ -17,15 +14,11 @@ class ExtensionContext {
 
     public set isActive(value: boolean) {
         this._isActive = value;
-        vscode.commands.executeCommand(
-            'setContext',
-            ExtensionContext.getContextKey(this.isActiveKey),
-            value,
-        );
+        vscode.commands.executeCommand('setContext', this.getContextKey(this.isActiveKey), value);
     }
 
-    public static getContextKey(key: string) {
-        return `${ExtensionContext.contextRootKey}.${key}`;
+    private getContextKey(key: string) {
+        return `${this.rootKey}.${key}`;
     }
 
     public view = new (class {
@@ -34,7 +27,7 @@ class ExtensionContext {
         public readonly isLoadedKey = 'view.isLoaded';
         private _isLoaded = false;
 
-        constructor() {
+        constructor(private readonly rootContext: ExtensionContext) {
             this.isFlatList = false;
             this.isLoaded = false;
         }
@@ -47,7 +40,7 @@ class ExtensionContext {
             this.isFlatList_ = value;
             vscode.commands.executeCommand(
                 'setContext',
-                ExtensionContext.getContextKey(this.isFlatListKey),
+                this.rootContext.getContextKey(this.isFlatListKey),
                 value,
             );
         }
@@ -60,11 +53,9 @@ class ExtensionContext {
             this._isLoaded = value;
             vscode.commands.executeCommand(
                 'setContext',
-                ExtensionContext.getContextKey(this.isLoadedKey),
+                this.rootContext.getContextKey(this.isLoadedKey),
                 value,
             );
         }
-    })();
+    })(this);
 }
-
-export const extensionContext = ExtensionContext.instance;

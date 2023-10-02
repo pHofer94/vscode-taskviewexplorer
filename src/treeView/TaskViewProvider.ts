@@ -1,49 +1,58 @@
 import * as vscode from 'vscode';
-import { extensionContext } from '../ExtensionContext';
 import TreeItem from './treeItems/TreeItem';
-import TaskGroupService from './TaskGroupService';
+import TaskSourceGroup from './TaskSourceGroup';
 import FetchTasksService from './FetchTasksService';
-import { TaskSourceGroupService } from './TaskSourceGroupService';
-import { extensionConfiguration } from '../ExtensionConfiguration';
-import { logger } from '../logger/Logger';
+import { TreeItemGroup } from './TreeItemGroup';
+import { Logger } from '../logger/Logger';
+import ExtensionConfiguration from '../ExtensionConfiguration';
+import ExtensionContext from '../ExtensionContext';
 
 export class TaskViewProvider implements vscode.TreeDataProvider<TreeItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<TreeItem | undefined | void> =
         new vscode.EventEmitter<TreeItem | undefined | void>();
     public readonly onDidChangeTreeData: vscode.Event<TreeItem | undefined | void> =
         this._onDidChangeTreeData.event;
+    private readonly disposables: vscode.Disposable[] = [];
 
     private isFlatList: boolean;
-    private tasksGroupService: TaskGroupService;
+    private taskSourceGroup: TaskSourceGroup;
     private fetchTasksService: FetchTasksService;
-    private taskSourceGroupService: TaskSourceGroupService;
+    private taskItemGroup: TreeItemGroup;
 
-    constructor(private workspaceRoot: string | undefined) {
+    constructor(
+        private workspaceRoot: string | undefined,
+        private readonly logger: Logger,
+        private readonly extensionConfiguration: ExtensionConfiguration,
+        private readonly extensionContext: ExtensionContext,
+    ) {
         this.isFlatList = extensionContext.view.isFlatList;
         const rootDir = this.workspaceRoot || '';
-        this.tasksGroupService = new TaskGroupService();
         this.fetchTasksService = new FetchTasksService(
             !extensionConfiguration.view.showHiddenTasks,
             extensionConfiguration.tasks.favorites,
             rootDir,
         );
-        this.taskSourceGroupService = new TaskSourceGroupService(rootDir, this.tasksGroupService);
+        this.taskSourceGroup = new TaskSourceGroup();
+        this.disposables.push(
+            this.fetchTasksService.onNewTask((task) => this.taskSourceGroup.addTask(task)),
+        );
+        this.taskItemGroup = new TreeItemGroup(rootDir, this.taskSourceGroup);
     }
 
     refresh(): void {
-        extensionContext.view.isLoaded = false;
+        this.extensionContext.view.isLoaded = false;
         this._onDidChangeTreeData.fire();
     }
 
     viewAsList(): void {
-        extensionContext.view.isFlatList = true;
-        this.isFlatList = extensionContext.view.isFlatList;
+        this.extensionContext.view.isFlatList = true;
+        this.isFlatList = this.extensionContext.view.isFlatList;
         this.refresh();
     }
 
     viewAsTree(): void {
-        extensionContext.view.isFlatList = false;
-        this.isFlatList = extensionContext.view.isFlatList;
+        this.extensionContext.view.isFlatList = false;
+        this.isFlatList = this.extensionContext.view.isFlatList;
         this.refresh();
     }
 
@@ -61,13 +70,13 @@ export class TaskViewProvider implements vscode.TreeDataProvider<TreeItem> {
             } catch (ex) {
                 const error = ex as Error;
                 const message = 'An error occurred during the process of creating the tree items.';
-                logger.error(`${message} Details - ${error.message}`);
+                this.logger.error(`${message} Details - ${error.message}`);
                 vscode.window.showErrorMessage(
                     `${message} For more details, please check the extension's output channel.`,
                 );
             }
         }
-        extensionContext.view.isLoaded = true;
+        this.extensionContext.view.isLoaded = true;
         return Promise.resolve(items);
     }
 
@@ -75,24 +84,24 @@ export class TaskViewProvider implements vscode.TreeDataProvider<TreeItem> {
         let items: TreeItem[] = [];
         if (element) {
             if (this.isFlatList) {
-                items = this.taskSourceGroupService.getTreeItemsOfTaskSourceAsFlatList(
-                    element.source,
-                );
+                items = this.taskItemGroup.getTreeItemsOfTaskSourceAsFlatList(element.source);
             } else {
-                items = this.taskSourceGroupService.getTreeItemsOfTaskSourceAsTreeList(
+                items = this.taskItemGroup.getTreeItemsOfTaskSourceAsTreeList(
                     element.source,
                     element.qualifier,
                 );
             }
         } else {
-            this.fetchTasksService.filterHiddenTasks = !extensionConfiguration.view.showHiddenTasks;
-            this.fetchTasksService.favorites = extensionConfiguration.tasks.favorites;
-            this.tasksGroupService.groupBySource(await this.fetchTasksService.fetchTasks());
+            this.taskSourceGroup.sourceMap.clear();
+            this.fetchTasksService.filterHiddenTasks =
+                !this.extensionConfiguration.view.showHiddenTasks;
+            this.fetchTasksService.favorites = this.extensionConfiguration.tasks.favorites;
+            await this.fetchTasksService.fetchTasks();
 
-            if (this.tasksGroupService.sourceMap.size === 0) {
+            if (this.taskSourceGroup.sourceMap.size === 0) {
                 vscode.window.showInformationMessage('Workspace has no tasks configured');
             } else {
-                items = this.taskSourceGroupService.getTreeItemRootFoldersOfTaskSources();
+                items = this.taskItemGroup.getTreeItemRootFoldersOfTaskSources();
             }
         }
         return items;

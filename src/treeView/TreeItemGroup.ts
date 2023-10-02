@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { subFolderToTreeItems, taskToTreeItem } from './TaskUtils';
 import TreeItem from './treeItems/TreeItem';
 import TreeItemRootFolder from './treeItems/TreeItemRootFolder';
-import TasksGroupService from './TaskGroupService';
+import TasksGroupService from './TaskSourceGroup';
 import { TaskSourceEnum } from './TaskTypes';
 
 function sortTreeItems(a: TreeItem, b: TreeItem) {
@@ -31,16 +31,16 @@ function sortRootFolders(a: TreeItem, b: TreeItem) {
     }
 }
 
-export class TaskSourceGroupService {
+export class TreeItemGroup {
     constructor(
         private workspaceRoot: string,
-        private tasksGroupService: TasksGroupService,
+        private taskSourceGroup: TasksGroupService,
     ) {}
 
     public getTreeItemRootFoldersOfTaskSources(): TreeItem[] {
         const items: TreeItem[] = [];
-        if (this.tasksGroupService.sourceMap.size > 0) {
-            for (const [key] of this.tasksGroupService.sourceMap) {
+        if (this.taskSourceGroup.sourceMap.size > 0) {
+            for (const [key] of this.taskSourceGroup.sourceMap) {
                 items.push(new TreeItemRootFolder(key));
             }
         }
@@ -49,7 +49,7 @@ export class TaskSourceGroupService {
 
     public getTreeItemsOfTaskSourceAsFlatList(source: string): TreeItem[] {
         const items: TreeItem[] = [];
-        const taskSource = this.tasksGroupService.sourceMap.get(source);
+        const taskSource = this.taskSourceGroup.sourceMap.get(source);
         if (taskSource) {
             let treeItems: TreeItem[] = [];
             for (const [key, task] of taskSource) {
@@ -62,13 +62,13 @@ export class TaskSourceGroupService {
 
     public getTreeItemsOfTaskSourceAsTreeList(source: string, qualifier: string): TreeItem[] {
         const items: TreeItem[] = [];
-        const taskSource = this.tasksGroupService.getSource(source);
+        const taskSource = this.taskSourceGroup.getSource(source);
         if (taskSource) {
             let treeItems: TreeItem[] = [];
             if (source === qualifier) {
                 treeItems = subFolderToTreeItems(source, '', taskSource, this.workspaceRoot);
             } else {
-                const subTaskSource = this.tasksGroupService.getSourceWhereOriginMatchQualifier(
+                const subTaskSource = this.taskSourceGroup.getSourceWhereOriginMatchQualifier(
                     source,
                     qualifier,
                 );
