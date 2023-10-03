@@ -30,11 +30,12 @@ export default class TaskView {
             showCollapseAll: true,
         });
 
-        context.subscriptions.push(view);
-        context.subscriptions.push(viewExplorer);
         context.subscriptions.push(
             extensionConfiguration.onConfigChangeForRefresh(() => taskViewProvider.refresh()),
         );
+        context.subscriptions.push(view);
+        context.subscriptions.push(viewExplorer);
+        context.subscriptions.push(taskViewProvider);
 
         vscode.commands.registerCommand(
             extensionCommands.getFullQualifiedCommandName(CommandsEnum.refreshView),

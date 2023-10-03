@@ -7,7 +7,7 @@ import { Logger } from '../logger/Logger';
 import ExtensionConfiguration from '../ExtensionConfiguration';
 import ExtensionContext from '../ExtensionContext';
 
-export class TaskViewProvider implements vscode.TreeDataProvider<TreeItem> {
+export class TaskViewProvider implements vscode.TreeDataProvider<TreeItem>, vscode.Disposable {
     private _onDidChangeTreeData: vscode.EventEmitter<TreeItem | undefined | void> =
         new vscode.EventEmitter<TreeItem | undefined | void>();
     public readonly onDidChangeTreeData: vscode.Event<TreeItem | undefined | void> =
@@ -37,6 +37,10 @@ export class TaskViewProvider implements vscode.TreeDataProvider<TreeItem> {
             this.fetchTasksService.onNewTask((task) => this.taskSourceGroup.addTask(task)),
         );
         this.taskItemGroup = new TreeItemGroup(rootDir, this.taskSourceGroup);
+    }
+
+    public dispose() {
+        this.disposables.splice(0).forEach((d) => d.dispose());
     }
 
     refresh(): void {
