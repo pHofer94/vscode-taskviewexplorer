@@ -1,4 +1,4 @@
-# [0.0.1] - 2023-10-03
+# [0.0.1] - 2023-10-04
 
 This is the initial release of the vscode-taskview extension.
 
