@@ -110,19 +110,19 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "task-explorer",
-          "title": "Task Explorer",
+          "id": "taskview-explorer",
+          "title": "Task View Explorer",
           "icon": "$(symbol-method)"
         }
       ]
     },
     "views": {
-      "task-explorer": [
+      "taskview-explorer": [
         {
           "id": "taskViewExplorer",
           "name": "Tasks",
           "icon": "$(symbol-method)",
-          "contextualTitle": "Task Explorer"
+          "contextualTitle": "Task View Explorer"
         }
       ],
       "explorer": [
