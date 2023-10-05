@@ -1,6 +1,6 @@
 # [0.0.1] - 2023-10-04
 
-This is the initial release of the vscode-taskview extension.
+This is the initial release of the Task View extension.
 
 - Display all tasks from the workspace in a dedicated view.
 - Group tasks based on the current working directory.

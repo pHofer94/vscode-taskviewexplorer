@@ -8,5 +8,5 @@
         "dist": true
     },
     "typescript.tsc.autoDetect": "off",
-    "vscode-taskview.tasks.favorites": []
+    "vscode-taskviewexplorer.tasks.favorites": []
 }

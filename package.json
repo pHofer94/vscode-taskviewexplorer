@@ -1,5 +1,5 @@
 {
-  "name": "vscode-taskview",
+  "name": "vscode-taskviewexplorer",
   "displayName": "Task View",
   "description": "All tasks are showcased in a dedicated view, grouped to improve organization and clarity.",
   "version": "0.0.1",
@@ -7,7 +7,7 @@
   "icon": "resources/favicon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pHofer94/vscode-taskview"
+    "url": "https://github.com/pHofer94/vscode-taskviewexplorer"
   },
   "license": "MIT",
   "engines": {
@@ -29,35 +29,35 @@
   "contributes": {
     "commands": [
       {
-        "command": "vscode-taskview.refreshView",
+        "command": "vscode-taskviewexplorer.refreshView",
         "title": "Refresh",
         "icon": "$(refresh)",
-        "enablement": "vscode-taskview.view.isLoaded"
+        "enablement": "vscode-taskviewexplorer.view.isLoaded"
       },
       {
-        "command": "vscode-taskview.viewAsList",
+        "command": "vscode-taskviewexplorer.viewAsList",
         "title": "View as List",
         "icon": "$(list-tree)",
-        "enablement": "vscode-taskview.view.isLoaded"
+        "enablement": "vscode-taskviewexplorer.view.isLoaded"
       },
       {
-        "command": "vscode-taskview.viewAsTree",
+        "command": "vscode-taskviewexplorer.viewAsTree",
         "title": "View as Tree",
         "icon": "$(list-flat)",
-        "enablement": "vscode-taskview.view.isLoaded"
+        "enablement": "vscode-taskviewexplorer.view.isLoaded"
       },
       {
-        "command": "vscode-taskview.runTask",
+        "command": "vscode-taskviewexplorer.runTask",
         "title": "Run",
         "icon": "$(run)"
       },
       {
-        "command": "vscode-taskview.addToFavorites",
+        "command": "vscode-taskviewexplorer.addToFavorites",
         "title": "Add to Favorites",
         "icon": "$(star-empty)"
       },
       {
-        "command": "vscode-taskview.removeFromFavorites",
+        "command": "vscode-taskviewexplorer.removeFromFavorites",
         "title": "Remove from Favorites",
         "icon": "$(star-full)"
       }
@@ -65,18 +65,18 @@
     "configuration": {
       "title": "Task View",
       "properties": {
-        "vscode-taskview.view.showHiddenTasks": {
+        "vscode-taskviewexplorer.view.showHiddenTasks": {
           "description": "If set, hidden tasks will be displayed in the task view.",
           "type": "boolean",
           "default": false
         },
-        "vscode-taskview.tasks.favorites": {
+        "vscode-taskviewexplorer.tasks.favorites": {
           "description": "It specifies the favorite tasks displayed in a separate folder. The names stored in the favorites follow the naming convention: <source>\\<cwd>\\<taskName>.",
           "type": "array",
           "minLength": 0,
           "default": []
         },
-        "vscode-taskview.logging.logLevel": {
+        "vscode-taskviewexplorer.logging.logLevel": {
           "description": "This specifies the log output level to the console.",
           "type": "string",
           "enum": [
@@ -98,13 +98,13 @@
     "viewsWelcome": [
       {
         "view": "taskView",
-        "contents": "No tasks found. Please refresh the view to search for tasks again.\n[Refresh](command:vscode-taskview.refreshView)",
-        "when": "vscode-taskview.view.isLoaded"
+        "contents": "No tasks found. Please refresh the view to search for tasks again.\n[Refresh](command:vscode-taskviewexplorer.refreshView)",
+        "when": "vscode-taskviewexplorer.view.isLoaded"
       },
       {
         "view": "taskViewExplorer",
-        "contents": "No tasks found. Please refresh the view to search for tasks again.\n[Refresh](command:vscode-taskview.refreshView)",
-        "when": "vscode-taskview.view.isLoaded"
+        "contents": "No tasks found. Please refresh the view to search for tasks again.\n[Refresh](command:vscode-taskviewexplorer.refreshView)",
+        "when": "vscode-taskviewexplorer.view.isLoaded"
       }
     ],
     "viewsContainers": {
@@ -135,59 +135,59 @@
     "menus": {
       "view/title": [
         {
-          "command": "vscode-taskview.refreshView",
+          "command": "vscode-taskviewexplorer.refreshView",
           "when": "view == taskView || view == taskViewExplorer",
           "group": "navigation@2"
         },
         {
-          "command": "vscode-taskview.viewAsList",
-          "when": "(view == taskView || view == taskViewExplorer) && !vscode-taskview.view.isFlatList",
+          "command": "vscode-taskviewexplorer.viewAsList",
+          "when": "(view == taskView || view == taskViewExplorer) && !vscode-taskviewexplorer.view.isFlatList",
           "group": "navigation@1"
         },
         {
-          "command": "vscode-taskview.viewAsTree",
-          "when": "(view == taskView || view == taskViewExplorer) && vscode-taskview.view.isFlatList",
+          "command": "vscode-taskviewexplorer.viewAsTree",
+          "when": "(view == taskView || view == taskViewExplorer) && vscode-taskviewexplorer.view.isFlatList",
           "group": "navigation@1"
         }
       ],
       "view/item/context": [
         {
-          "command": "vscode-taskview.runTask",
+          "command": "vscode-taskviewexplorer.runTask",
           "when": "(view == taskView || view == taskViewExplorer) && viewItem =~ /^treeItemTask/",
           "group": "inline"
         },
         {
-          "command": "vscode-taskview.addToFavorites",
+          "command": "vscode-taskviewexplorer.addToFavorites",
           "when": "(view == taskView || view == taskViewExplorer) && viewItem =~ /^treeItemTask/ && !(viewItem =~ /Fav/)"
         },
         {
-          "command": "vscode-taskview.removeFromFavorites",
+          "command": "vscode-taskviewexplorer.removeFromFavorites",
           "when": "(view == taskView || view == taskViewExplorer) && viewItem =~ /^treeItemTask/ && viewItem =~ /Fav/"
         }
       ],
       "commandPalette": [
         {
-          "command": "vscode-taskview.refreshView",
+          "command": "vscode-taskviewexplorer.refreshView",
           "when": "false"
         },
         {
-          "command": "vscode-taskview.viewAsList",
+          "command": "vscode-taskviewexplorer.viewAsList",
           "when": "false"
         },
         {
-          "command": "vscode-taskview.viewAsTree",
+          "command": "vscode-taskviewexplorer.viewAsTree",
           "when": "false"
         },
         {
-          "command": "vscode-taskview.runTask",
+          "command": "vscode-taskviewexplorer.runTask",
           "when": "false"
         },
         {
-          "command": "vscode-taskview.addToFavorites",
+          "command": "vscode-taskviewexplorer.addToFavorites",
           "when": "false"
         },
         {
-          "command": "vscode-taskview.removeFromFavorites",
+          "command": "vscode-taskviewexplorer.removeFromFavorites",
           "when": "false"
         }
       ]
